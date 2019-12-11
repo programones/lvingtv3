@@ -23,7 +23,9 @@
            </div>
        </div>
         <!--直播间内容展示  -->
-        <div class="homepage-bottom"  ref="contentRoom">
+        
+     <div class="homepage-bottom"  ref="contentRoom" key="Itme">
+            
            <div class="homelive" v-for="(items,i) in cateList" :key="i">
             <div class="homelive-title"><span>{{items.cate_name}}</span></div>
             <div class="homelive-content">
@@ -39,19 +41,26 @@
 
                  </div>
              </div>
-         </div>     
-         </div>
+         </div>    
+            
+     </div>
+
         <footer-ele :boxContent="boxheight"></footer-ele>
+          <transition-group name="home-fade">
+        <search v-if="showSerch" @topassSreachVal="getSearchVal" key="home"></search>
+        </transition-group>
     </div>
 </template>
 <script>
 import {http} from '../http/http';
 import footerEle from '../components/home-about/footer.vue';
+import search from '../components/home-about/search'
 // import { log } from 'util'
 
 export default {
     components :{
-    footerEle
+    footerEle,
+    search
     },
      data(){
     return {
@@ -67,7 +76,10 @@ export default {
         hotList:[],//热门列表
        cateList:[],//分类列表包括热门
        allList:[],//总分类列表
-       boxheight:'',//列表的高度     
+       boxheight:'',//列表的高度  
+       showSerch:false,  
+       isWeixin:false,//是否为微信端 
+       shareData:{},//
         }
     },
     methods:{
@@ -87,14 +99,87 @@ export default {
       },
       toFind(){
           //搜索点击触发事件
-       alert(1111);
-    //    this.$router.push('search')
+    //    alert(1111);
+       this.showSerch=true;
       },
       toLivingroom(roomId,num){
     //    window.console.log(roomId);  
        this.$router.push({ name: 'room', params: { id: roomId }}); //编程式导航
        window.localStorage.setItem('peoples',num)
-      }
+      },
+      getSearchVal(val){
+          //获取search组件上传的值
+        this.showSerch=false;
+      },
+       wxshareFn(){
+        if(this.isWeixin){
+          this.$http.weixinshare(room_id).then(res=>{
+        //    console.log(res);
+            if(res.data.code==200) {
+                        this.shareData = res.data.data;
+                        let config = this.shareData.config;
+                        // console.log(this.shareData);                      
+                        wx.config({
+                            // debug: true,
+                            appId: config.appId,
+                            nonceStr: config.nonceStr,
+                            timestamp: config.timestamp,
+                            signature: config.signature,
+                            jsApiList: [
+                                "updateAppMessageShareData",
+                                "updateTimelineShareData",  
+                                'onMenuShareAppMessage',  //旧的接口，即将废弃
+                                'onMenuShareTimeline' ,//旧的接口，即将废弃                           
+                                "onMenuShareWeibo"         
+                            ]
+                        });
+                        let url = window.location.href;
+                        // if(url.indexOf("?iuid=''") != -1){
+                        //    url=url.replace(/iuid=''/)
+                        // }                      
+                        wx.ready(() => {
+                                    
+                            wx.updateAppMessageShareData({
+                              //“分享给朋友”及“分享到QQ”按钮的分享内容
+                                title:this.shareData.title, // 分享标题
+                                link: url, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+                                desc:  this.shareData.desc, // 分享描述
+                                imgUrl:this.shareData.img, // 分享图标
+                                 type: 'link', // 分享类型,music、video或link，不填默认为link
+                                success: function () {
+                                    // 用户点击了分享后执行的回调函数
+                                }
+                            });
+
+                            wx.updateTimelineShareData({
+                              //“分享到朋友圈”及“分享到QQ空间”按钮的分享内容
+                                title: this.shareData.title, // 分享标题                           
+                                link:  url, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+                                imgUrl:this.shareData.img, // 分享图标
+                                type: 'link', // 分享类型,music、video或link，不填默认为link
+                                success: function () {
+                                    // 用户点击了分享后执行的回调函数
+                                }
+                            });
+                            wx.onMenuShareWeibo({
+                                title:this.shareData.title, // 分享标题
+                                desc: this.shareData.desc, // 分享描述
+                                link: url, // 分享链接
+                                imgUrl:this.shareData.img, // 分享图标
+                                success: function () {
+                                    // 用户确认分享后执行的回调函数
+                                },
+                                cancel: function () {
+                                    // 用户取消分享后执行的回调函数
+                                }
+                            });
+                        });
+                    }
+           
+      })
+      }             
+    },
+    
     },
     created(){
         http.headList().then(res=>{//获取Hand数据
@@ -122,6 +207,13 @@ export default {
             
         })
     },
+    mounted(){
+        // 判断是否是微信浏览器
+      let ua = navigator.userAgent.toLowerCase();
+      this.isWeixin = ua.indexOf('micromessenger') != -1;  
+    //   window.console.log(this.isWeixin)
+       this.wxshareFn();
+    }
 }
 </script>
 <style>
@@ -257,5 +349,19 @@ export default {
      .homelive .homelive-content .room-item .room-itemTitle {
          position: absolute;
          bottom: .425rem;
+     }
+         .home-fade-enter-active, .home-fade-leave-active {
+     transition: all .4s ease;
+    }
+    .home-fade-enter, .home-fade-leave-to {
+     opacity: 0;
+    transform: translate(600px,00px);
+     }
+         .homeItem-fade-enter-active, .homeItem-fade-leave-active {
+     transition: all .4s ease;
+    }
+    .homeItem-fade-enter, .homeItem-fade-leave-to {
+     opacity: 0;
+    transform: translate(600px,00px);
      }
 </style>

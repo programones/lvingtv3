@@ -8,10 +8,15 @@ export function getCookie(name) {
    }
    
    //设置cookie,增加到vue实例方便全局调用
-   export function setCookie (c_name, value, expiredays) {
-    var exdate = new Date();
-    exdate.setDate(exdate.getDate() + expiredays);
-    document.cookie = c_name + "=" + escape(value) + ((expiredays == null) ? "" : ";expires=" + exdate.toGMTString());
+   export function setCookie (name, value, seconds) {
+    seconds = seconds || 0;   //seconds有值就直接赋值，没有为0，这个根php不一样。
+      var expires = "";
+      if (seconds != 0 ) {      //设置cookie生存时间
+     var date = new Date();
+     date.setTime(date.getTime()+(seconds*1000*60*60*24));//天为单位
+     expires = "; expires="+date.toGMTString();
+     }
+     document.cookie = name+"="+escape(value)+expires+"; path=/";   //转码并赋值
    };
    
    //删除cookie

@@ -1,6 +1,6 @@
 <template>
     <div>
-
+        <p>获取收益金额</p>
     </div>
 </template>
 

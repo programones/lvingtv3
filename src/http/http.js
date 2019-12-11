@@ -2,7 +2,40 @@ import axios from 'axios'
 export const http = axios.create({
     baseURL: 'http://bi.psvideo.cn/' //数据请求基地址
   })
- 
+
+   //room 微信分享设置
+ http.weixinshare=(room_id)=>{
+  return http.post('/timeshare/wx_share',{
+    room_id  
+  })
+}
+   //room 获取微信授权的url
+   http.getCodeUrl=(url)=>{
+      return http.get('/api/wx_url',{
+        params:{
+          url 
+        }
+      })
+   }
+ //room 第三方登陆获取临时(非手机号码)授权
+  http.getLoginOther=({auth_id,type})=>{
+    return http.post('/api/login_auth',{
+      auth_id,type   
+    })
+  }
+  //room 分享的请求
+  http.shareRec=({openid,uid,ip,room_id})=>{
+    return http.post('/api/user_share_log',{
+      openid,uid,ip,room_id
+    })
+  }
+  //questionForm 获取问题列表
+  http.getQuestionList=(room_id)=>{
+    return http.post('/api/question',{
+      room_id
+    })
+  }
+
 http.headList = () => { 
    //获取头部导航标签
     return http.get('api/liveroom/get_category/',{params: { 
@@ -12,7 +45,42 @@ http.livingTvList= () =>{
   //获取直播间直播房间列表
   return http.get('api/liveroom/list',{})
 }
+//  room 中获取微信用户信息
+http.getweichatIfo=(code)=>{
+ return http.get('/api/oauth_callback',{
+   params:{
+    code
+   }
+ })
+}
+ http.getgoodsDetile=(goods_id)=>{
+  //prodeuctDetile获取详细商品列表信息
+   return http.post('/api/goods_detail',{
+    goods_id
+   })
+ }
+ http.getgoodsExchange=({goods_id,member_token,num})=>{
+  //prodeuctDetile 兑换或购买商品列表信息
+   return http.post('/api/goods_exchange',{
+    goods_id,member_token,num
+   })
+ }
 
+http.getcommodityList=(page)=>{
+  // moreCommodity 获取更多商品列表
+  return http.post('/api/goods_list',{
+      page
+  })
+}
+ 
+ //rearch 获取搜索结果相关
+  http.getSearchResult=({keyword,cate_id})=>{
+    return http.get('/api/liveroom/list',{
+      params:{
+        keyword,cate_id
+      }
+    })
+  }
 http.livingRoom=({room_id,member_token,ip,iploc,history,lesson})=>{
   //videoArea获取直播间的详细信息
   return http.post('/api/room',{
@@ -31,7 +99,33 @@ http.getpoint=({room_id,room_title,member_token})=>{
         room_id,current_time,member_token,ip,iploc  
       })
  }
+ //videoArea 输入密码观看直播
+ http.checkedVideo=({password,room_id})=>{
+      return http.post('/api/verify_password',{
+        password,room_id  
+      })
+ }
+ //videoTabsBrand 获取广告列表
+   http.getADList=({ip,iploc,member_token,room_id,uid})=>{
+     return http.post('/api/ads',{
+      ip,iploc,member_token,room_id,uid
+     })
+   }
+   //videoTabsBrand 点击广告的统计
+   http.clickADreq=({ads_id,ip,iploc,uid})=>{
+    return http.post('/api/click_ads',{
+      ads_id,ip,iploc,uid
+    })
+   }
+   // videoTabsRanklist 获取邀请粉丝排行列表
+   http.getRankList=(room_id)=>{
+    return http.post('/api/invite_rank_list',{
+      room_id
+    })
 
+   }
+
+   
  //videoTabs tab栏切换
  http.roomtabs = (room_id)=>{
    return http.post('/api/get_room_column',{
@@ -56,7 +150,7 @@ http.getpoint=({room_id,room_title,member_token})=>{
       member_token,ip,room_id
     })
   }
-  //videoTabsChat 发送聊天信息请求之一
+  //videoTabsChat 发送聊天信息请求之一  room获取到token后的操作
   http.userIfourl=(member_token)=>{
     return http.post('/api/user',{
       member_token
@@ -72,6 +166,12 @@ http.getpoint=({room_id,room_title,member_token})=>{
    http.getGift=()=>{
     return http.post('/api/get_gift',{})
    }
+   //videoTabsChat 获取点击领取红包
+   http.drawRedPaper=({member_token,rp_id,room_id})=>{
+    return http.post('/api/get_redpacket',{
+      member_token,rp_id,room_id
+    })
+   }
 
   //videoTabsRecord 获取历史视频记录
    http.getvideoHistory=(room_id)=>{
@@ -85,16 +185,79 @@ http.getpoint=({room_id,room_title,member_token})=>{
       room_id
     })
    }
+  
    //registered 发送验证码
    http.sendcode=(mobile)=>{
      return http.post('/api/send_code',{
       mobile
      })
    }
-   //获取登陆后的token
+   //registered 获取登陆后的token
    http.getloginToken=({mobile,mobile_code,openid,nickname,sex,province,city,country,headimgurl,uid,room_id})=>{
      return http.post('/api/login',{
       mobile,mobile_code,openid,nickname,sex,province,city,country,headimgurl,uid,room_id
      })
    }
-
+   //maogaoDetile 获取课程的封面,标题信息等
+   http.getlessonIfo=(vod_id)=>{
+     return  http.post('/api/lesson',{
+      vod_id
+     })
+   }
+   //maogaoDetile 发起结算相关信息
+    http.getlessonPay=({room_id,member_token,pay_way,pay_type,vod_id})=>{
+      return http.post('/api/video_pay',{
+        room_id,member_token,pay_way,pay_type,vod_id
+      })
+    }
+   //videoTabsChat 礼物结算信息
+    http.getGiftPay=({room_id,member_token,pay_way,pay_type,gift_id})=>{
+      return http.post('/api/video_pay',{
+        room_id,member_token,pay_way,pay_type,gift_id
+      })
+    }
+    //unreadIfo 获取积分的信息
+    http.getunreadIfoList=({member_token,page})=>{
+      return http.post('/api/user_message',{
+        member_token,page
+      })
+    }
+    //personalIntrgral 获取个人积分详细信息
+    http.getIntrgralList=({endtime,member_token,page,starttime})=>{
+      return http.post('/api/point_list',{
+        endtime,member_token,page,starttime
+      })
+    }
+    //prizeTask 获取有奖任务相关信息
+    http.getPrizeIfo=(member_token)=>{
+      return http.post('/api/task_list',{
+        member_token
+      })
+    }
+    //orderDetile 获取购物订单列表
+    http.getorderDetileList=({member_token,page})=>{
+      return http.post('/api/order_list',{
+        member_token,page
+      })
+    }
+    //balance 获取红包列表
+    http.getBalanceList=({member_token,page})=>{
+      return http.post('/api/redpacket',{
+        member_token,page
+      })
+    }
+    //balance 提现请求
+    http.getMoney=(member_token)=>{
+      return http.post('/api/rp_pay',{
+        member_token
+      })
+    }
+    // ad 获取商品列表的请求方法
+    http.getadList=()=>{
+      return http.post('/api/goods_hot',{})
+    }
+    //login 根据token获取用户用户的详细信息
+    http.getUserIfo=(member_token)=>{
+      return http.post('/api/user',{member_token})
+    }
+    

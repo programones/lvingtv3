@@ -14,6 +14,7 @@
 </template>
 <script>
 import {http} from '../../http/http';
+// import bus from '../../eventBus'
 export default {
 
     data() {
@@ -35,7 +36,11 @@ export default {
              )
         },
         toVideo(val){
-        window.console.log(val,'单个视频信息');        
+        // window.console.log(val,'单个视频信息');   
+        // bus.$emit('passvalue',val)     
+        this.$router.push({name:'room',params:{id: this.$route.params.id},query:{ uid: this.$route.query.uid, 
+         history: val.log_id}});
+        window.location.reload();
         }   
     },
     created() {
@@ -44,6 +49,7 @@ export default {
     mounted() {
       this.videoHistory()    
     },
+    
 }
 </script>
 <style>
@@ -52,6 +58,16 @@ export default {
     overflow-y: auto;
     height: 20rem;
 }
+ @media (min-width: 767px) and (max-width: 1300px){
+        .record {
+        height: 14rem;
+     }    
+  }
+  @media (min-height: 800px) and (max-height: 830px) {
+    .record {
+        height: 27rem;
+     }     
+  }
 .record .no-video{
     margin-top: 36%;
     text-align: center;

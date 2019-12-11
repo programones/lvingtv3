@@ -45,9 +45,10 @@ i {
     font-style: normal;
 }
 
-body {
+html,body {
     font-size: 12px;
     line-height: 1;
+    height: 90%;
 }
 
 .clearfix::after {

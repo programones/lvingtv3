@@ -11,14 +11,17 @@
            </ly-tab>
       </div>
       <div class="tab-content">
-        <chart-room v-show="thistab=='interactive'"></chart-room>  
-       <me v-show="thistab=='me'"></me>   
-        <record v-if="thistab=='record'"></record>     
-        <paytheme v-show="thistab=='mogao'"></paytheme>  
-        <rank-list v-if="thistab=='inviteRankList'"></rank-list>
-        <brand v-if="thistab=='origin'"></brand>                                            
+          <transition-group name="component-fade" mode="in-out">
+        <chart-room v-if="thistab=='interactive'" key="one"></chart-room>  
+        <me v-show="thistab=='me'" key="two" :wechatData="wechatData"></me>   
+        <record v-if="thistab=='record'" key="three"></record>     
+        <paytheme v-show="thistab=='mogao'" key="four"></paytheme>  
+        <rank-list v-if="thistab=='inviteRankList'" key="five"></rank-list>
+        <brand v-if="thistab=='origin'" key="six"></brand> 
+
+         </transition-group>                                              
       </div>
-   
+        
     </div>
 </template>
 
@@ -32,6 +35,8 @@ import paytheme from './videoTabsPaytheme';
 import rankList from './videoTabsRanklist';
 import brand from './videoTabsBrand';
 export default {
+    name:"videoTabs",
+    props: ['wechatData'],
     components:{
         chartRoom,
         me,
@@ -57,7 +62,7 @@ export default {
         headTitle(item,index){
             window.console.log(item,index);
             this.thistab=item.column_api
-        }
+        },
         
     },
     created() {
@@ -77,14 +82,27 @@ export default {
 <style>
     .tabs-title {
        opacity: 0;
-    line-height: 4px;
+    line-height: 6px;
     }
     .tab-content {
-    
+    overflow: auto;    
     box-sizing: border-box;
     position: absolute;
     width: 100%;
     height: 62%;
     border: 6px rgba(241, 241, 239, 0.836) solid;
     }
+    .component-fade-enter-active, .component-fade-leave-active {
+     transition: all .4s ease;
+    }
+    .component-fade-enter, .component-fade-leave-to {
+     opacity: 0;
+    transform: translate(600px,00px);
+     }
+     @media (min-width: 767px) and (max-width: 1300px) { 
+         .tab-content{
+              height: 55%;
+         }
+     }
+
 </style>

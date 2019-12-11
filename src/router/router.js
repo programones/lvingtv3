@@ -7,6 +7,10 @@ import home from '../views/home.vue'
 import room from '../views/room.vue'
 import search from "../views/search.vue"
 import personalCenter from "../views/personalCenter.vue"
+import mogaoDetails from "../views/mogaoDetails.vue"
+import moreCommodity from "../views/moreCommodity.vue"
+import productDetails from "../views/productDetails.vue"
+import questionform from "../views/questionForm.vue"
 const routes = [
   { path: "/", 
 	redirect:"/home"
@@ -27,9 +31,33 @@ const routes = [
      name:"room"
    },
    {
+     //个人中心
      path:'/personalCenter/:id',
      component:personalCenter,
      name:"personalCenter"
+   },
+   {
+     path:'/mogaoDetails/:id',
+     component:mogaoDetails,
+     name:"mogaoDetails"
+   },
+   {
+     //更多商品列表
+     path:'/moreCommodity/:id',
+     component:moreCommodity,
+     name:"moreCommodity"
+   },
+   {
+     //商品详细
+     path:'/productDetails/:id',
+     component:productDetails,
+     name:"productDetails"
+   },
+   {
+     //调查问卷
+     path:'/questionform/:id',
+     component:questionform,
+     name:"questionform"
    },
   ]
   const router = new VueRouter({

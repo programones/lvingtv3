@@ -14,6 +14,7 @@
 
 <script>
 import {http} from '../../http/http';
+import bus from '../../eventBus'
 export default {
     props: {
 
@@ -35,6 +36,18 @@ export default {
            }
        )    
       },
+      toVideo(item){
+       window.console.log(item);
+       if(item.is_package == '1'){
+        // 点击套餐购买跳转付费页
+        this.$router.push({name:'mogaoDetails',params:{id:this.$route.params.id},query:{vod_id: item.vod_id}})
+       }else{
+            this.$router.push({name:'room',params:{id: this.$route.params.id},query:{ uid: this.$route.query.uid, 
+         lesson: item.lesson_id}}); 
+          window.location.reload();
+       }  
+
+      }
     },
     created() {
 

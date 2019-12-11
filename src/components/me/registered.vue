@@ -14,25 +14,34 @@
           </div>
       </div>
       <signin-agree @setAgreement="passValue" v-if="agreeShow"></signin-agree>  
+      <toast v-if="toastTag" :toastMsg="toastMsg"></toast>
     </div>
 
 </template>
  
  <script>
  import signinAgree from './registrationAgreement';
-import {http} from '../../http/http'
+ import {getCookie,setCookie,delCookie} from '../../api/aboutCookies';
+ import toast from '../../components/tusi/toast.vue'
  export default {
+   name:"registred",
+    props: ['wechatData'],
      components:{
-      signinAgree   
+      signinAgree,
+      toast 
      },
     data() {
         return {
          radio:false,   
          agreeShow:false,
-         phoneNumber:'',
-         code:'',
+         phoneNumber:'',//手机号码
+         code:'', //验证码
          statusCode: false,
-         residueTime:60,
+         residueTime:60,//验证码倒计时60秒
+         isWeixin:false,//判断是否在微信浏览器
+         toastTag:false,//土司提示框是否显示
+         toastMsg:'loading',//土司提示文字信息
+         tokenDay:7,//token存储的天数
         }
     }, 
     methods: {
@@ -85,13 +94,15 @@ import {http} from '../../http/http'
      //预约处手机号码的发送方法
      sendPhoneCode(){
        let number = this.phoneNumber
-       http.sendcode(number).then(res=>{
+       setCookie('mobile', this.phoneNumber, this.tokenDay);//将手机号放入cookies
+       this.$http.sendcode(number).then(res=>{
           console.log(res);
           if(res.data.code==200){
            this.$notify({
           showClose: true,
           type:'success',
           message: "验证码已发送",
+          position: 'bottom-left',
           duration: 2500
            });
           }else {
@@ -99,6 +110,7 @@ import {http} from '../../http/http'
               message: "两分钟内请勿重复发送!",
               type: "warning",
               duration: 2500,
+               position: 'bottom-left',
               showClose: true
              });
           }
@@ -124,27 +136,81 @@ import {http} from '../../http/http'
            duration: 1500
      })
      }else{
-      window.console.log('发送注册请求',this.phoneNumber,this.code);
-      if(this.phoneNumber=='15179175372' && this.code== '1234'){
+      // window.console.log('发送注册请求',this.phoneNumber,this.code);
+      // if(this.phoneNumber=='15179175372' && this.code== '1234'){
 
-        this.$emit('close',{value:false})
-      }   
+      //   this.$emit('close',{value:false})
+      // }  
+      if(this.isWeixin){
+        let params ={
+          mobile:this.phoneNumber,
+          mobile_code:this.code,
+          openid:this.wechatData.openid,
+          nickname:this.wechatData.nickname,
+          sex:this.wechatData.sex,
+          province:this.wechatData.province,
+          city:this.wechatData.city,
+          country:this.wechatData.country,
+          headimgurl:this.wechatData.headimgurl,
+          uid:this.$route.query.uid || '',
+          room_id:this.$route.params.id
+        }
+        this.$http.getloginToken(params).then(res=>{
+          this.loginFn(res)
+        })
+      }else{
+        let params={
+          mobile:this.phoneNumber,
+          mobile_code:this.code,
+          uid: this.$route.query.uid || '',
+          room_id:this.$route.params.id
+        }
+        this.$http.getloginToken(params).then(res=>{
+            this.loginFn(res)
+        })
+      }
      }
     
-    }    
+    },
+     loginFn(res){
+       //获取后台数据判断是否登陆成功
+      let getData = res.data;
+       if(getData.code==200){
+         //登陆成功显示提示信息
+          window.console.log('登陆成功~')
+          this.toastMsg = getData.msg;
+          this.toastTag = true;
+          window.setTimeout(()=>{
+            this.toastTag=false;
+          },2000);
+           this.$emit('close',{value:false});
+           this.$route.query.uid = getData.data.uid;
+           setCookie('token', getData.data.token,this.tokenDay);
+           window.localStorage.setItem('token',getData.data.token);//将token放进localStirage
+           window.console.log(getData)
+       } else if(getData.code==500){
+           this.toastMsg = getData.msg;
+           this.toastTag = true; 
+            window.setTimeout(() => {
+             this.toastTag = false;
+           }, 2000);
+       }
+     }   
     },
     created() {
         
     },
     mounted() {
-        
+       // 判断是否是微信浏览器
+        let ua = navigator.userAgent.toLowerCase();
+        this.isWeixin = ua.indexOf('micromessenger') != -1;  
     },
  }
  </script>
  <style>
-    .register{
+    /* .register{
        
-    }
+    } */
     .register .me-title{
     line-height: 31px;
     font-size: 20px;   
