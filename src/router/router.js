@@ -3,62 +3,67 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 Vue.use(VueRouter)
 // 准备规则
-import home from '../views/home.vue'
-import room from '../views/room.vue'
-import search from "../views/search.vue"
-import personalCenter from "../views/personalCenter.vue"
-import mogaoDetails from "../views/mogaoDetails.vue"
-import moreCommodity from "../views/moreCommodity.vue"
-import productDetails from "../views/productDetails.vue"
-import questionform from "../views/questionForm.vue"
+// import home from '../views/home.vue'
+// import room from '../views/room.vue'
+// import search from "../views/search.vue"
+// import personalCenter from "../views/personalCenter.vue"
+// import mogaoDetails from "../views/mogaoDetails.vue"
+// import moreCommodity from "../views/moreCommodity.vue"
+// import productDetails from "../views/productDetails.vue"
+// import questionform from "../views/questionForm.vue"
 const routes = [
   { path: "/", 
 	redirect:"/home"
   },
   {
    path:"/home",
-   component: home,
+   component: ()=> import('../views/home.vue'),
    name:"home"
   },
    {
      path:"/search",
-     component: search,
+     component: ()=> import('../views/search.vue'),
      name:"search"
    },
    {
      path:'/room/:id',
-     component:room,
+     component:()=> import('../views/room.vue'),
      name:"room"
    },
    {
      //个人中心
      path:'/personalCenter/:id',
-     component:personalCenter,
+     component:()=> import('../views/personalCenter.vue'),
      name:"personalCenter"
    },
    {
      path:'/mogaoDetails/:id',
-     component:mogaoDetails,
+     component:()=> import('../views/mogaoDetails.vue'),
      name:"mogaoDetails"
    },
    {
      //更多商品列表
      path:'/moreCommodity/:id',
-     component:moreCommodity,
+     component:()=> import('../views/moreCommodity.vue'),
      name:"moreCommodity"
    },
    {
      //商品详细
      path:'/productDetails/:id',
-     component:productDetails,
+     component:()=> import('../views/productDetails.vue'),
      name:"productDetails"
    },
    {
      //调查问卷
      path:'/questionform/:id',
-     component:questionform,
+     component:()=> import('../views/questionForm.vue'),
      name:"questionform"
    },
+   {
+    path: '*',
+    name: 'noF',
+    component:()=> import('../views/notFound.vue')
+  },
   ]
   const router = new VueRouter({
   routes

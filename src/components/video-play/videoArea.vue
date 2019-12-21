@@ -11,7 +11,7 @@
       <!-- 状态 -->
       <div class="live-status" v-if="videostatus" @click="showTips">{{statusTag}}</div>
       <!-- 人数 -->
-      <div class="pv-num">
+      <div class="pv-num" @click="closePeopoleNum">
         <i class="iconfont icon-touxiang"></i>
         {{peoples}}
       </div>
@@ -53,7 +53,7 @@ export default {
       splashCutdown: "", //引导他倒计时
       videoplayer: null, //储存播放器播放对象
       videostatus: true, //直播状态的显示
-      peoples: "", //直播观看的热度
+      peoples: "loading", //直播观看的热度
       historyvideo: {}, //历史视频记录
       day: 0, // 倒计时的天数
       hour: "00", // 倒计时的小时
@@ -63,6 +63,7 @@ export default {
       showPWDmask:false,//是否显示密码输入层
       isPassword:"",
       coverUrl:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1575693743908&di=32dff5302e8ef44fb149178ee2c21d67&imgtype=0&src=http%3A%2F%2Fg.hiphotos.baidu.com%2Fzhidao%2Fpic%2Fitem%2Fc83d70cf3bc79f3d6e7bf85db8a1cd11738b29c0.jpg',//未付费背景图片
+      targe:true,//点击是否显示人数
     };
   },
   methods: {
@@ -81,9 +82,12 @@ export default {
           window.console.log(res);
           // 直播间信息
           this.videoInfoData = res.data.data.videoinfo;
+          //直播间人数
+          this.peoples = this.videoInfoData.group_num
           // 用户登录信息
           this.wxuInfoData = res.data.data.wxuinfo;
           window.console.log(this.videoInfoData);
+           document.title = this.videoInfoData.title
           this.toChange();
           //在localstorage 存储 这个视频的是否付费信息
           // window.console.log('=======================')
@@ -102,8 +106,12 @@ export default {
           }
               
 
-        }else if(res.data.code == 501){
-         
+        }else if(res.data.code == 500){
+          this.$notify({
+          title: '房间不存在',        
+          position: 'bottom-left',
+      		duration:3000,//设置0的话的则不会关闭
+        });
         }
       });
     },
@@ -163,7 +171,7 @@ export default {
        if(window.localStorage.getItem('token') || getCookie('token')){
          let params = {
            room_id:this.$route.params.id,
-           room_title:this.videoInfoData.video_title,
+           room_title:this.videoInfoData.title,
            member_token:getCookie('token') || window.localStorage.getItem('token')
          }
          setTimeout(()=>{
@@ -346,9 +354,11 @@ export default {
        bus.$emit('showPayMask',true)
         window.localStorage.setItem('showPayMask',true)
       window.setTimeout(()=>{
+        
        bus.$emit('payVideoDatas',this.videoInfoData);
           
-      },)
+      },1)
+  
          let videobgc = document.querySelector(".video-area"); //没有播放时的设置封面
          videobgc.style.background = `url(${this.coverUrl})  no-repeat center center / 100% 100%`;
            this.statusTag = "点我支付";
@@ -434,11 +444,24 @@ export default {
     //   }
       
     // }
+    closePeopoleNum(){
+    let num=  document.querySelector('.pv-num');
+    // window.console.log(num);
+    // let targe = true
+    if(this.targe){
+      num.setAttribute('style','opacity:0');
+      this.targe=false
+    }else{
+     num.setAttribute('style','opacity:1') ;
+      this.targe=true 
+    }
+    
+    },
   },
 
   mounted() {
     //取读直播的人数
-    this.peoples = window.localStorage.getItem("peoples");
+    // this.peoples = window.localStorage.getItem("peoples");
 
     // 判断是否属于微信端浏览器
     let ua = navigator.userAgent.toLowerCase();
@@ -509,8 +532,8 @@ export default {
   background-color: hsla(0, 0%, 98%, 0.3);
   color: #fff;
   right: 8px;
-  top: 20px;
-  width: 60px;
+  top: 10px;
+  max-width:70px;
   line-height: 19px;
   text-align: center;
   border-radius: 3px;

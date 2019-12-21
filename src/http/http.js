@@ -1,11 +1,12 @@
 import axios from 'axios'
 export const http = axios.create({
-    baseURL: 'http://bi.psvideo.cn/' //数据请求基地址
+    baseURL: 'http://bi.psvideo.cn/' ,//数据请求基地址,
+    // headers: {'Content-Type': 'application/x-www-form-urlencoded'}
   })
 
    //room 微信分享设置
  http.weixinshare=(room_id)=>{
-  return http.post('/timeshare/wx_share',{
+  return http.post('/api/wx_share',{
     room_id  
   })
 }
@@ -47,12 +48,19 @@ http.livingTvList= () =>{
 }
 //  room 中获取微信用户信息
 http.getweichatIfo=(code)=>{
- return http.get('/api/oauth_callback',{
+ return http.get('/api/wx_oauth',{
    params:{
     code
    }
  })
 }
+// room 中传入mid 单独获取授权
+http.weichatRoomID=(code,mid)=>{
+ return http.post('/wx/oauth_callback/'+mid,{
+  code
+ })
+}
+
  http.getgoodsDetile=(goods_id)=>{
   //prodeuctDetile获取详细商品列表信息
    return http.post('/api/goods_detail',{
@@ -112,11 +120,12 @@ http.getpoint=({room_id,room_title,member_token})=>{
      })
    }
    //videoTabsBrand 点击广告的统计
-   http.clickADreq=({ads_id,ip,iploc,uid})=>{
+   http.clickADreq=({member_token,ip,iploc,room_id,ads_id})=>{
     return http.post('/api/click_ads',{
-      ads_id,ip,iploc,uid
+      member_token,ip,iploc,room_id,ads_id
     })
    }
+   
    // videoTabsRanklist 获取邀请粉丝排行列表
    http.getRankList=(room_id)=>{
     return http.post('/api/invite_rank_list',{
@@ -163,8 +172,8 @@ http.getpoint=({room_id,room_title,member_token})=>{
     })
   }
    //videoTabsChat 获取礼物列表
-   http.getGift=()=>{
-    return http.post('/api/get_gift',{})
+   http.getGift=(rid)=>{
+    return http.post('/api/get_gift',{rid})
    }
    //videoTabsChat 获取点击领取红包
    http.drawRedPaper=({member_token,rp_id,room_id})=>{
@@ -172,7 +181,12 @@ http.getpoint=({room_id,room_title,member_token})=>{
       member_token,rp_id,room_id
     })
    }
-
+   //videoTabsChat 获取点击的红包统计链接
+    http.clickRedpaper=({ads_id,ip,iploc,member_token})=>{
+      return http.post('/api/get_ads_rp',{
+        ads_id,ip,iploc,member_token  
+      })
+    }
   //videoTabsRecord 获取历史视频记录
    http.getvideoHistory=(room_id)=>{
         return http.post('/api/live_history',{
@@ -204,7 +218,7 @@ http.getpoint=({room_id,room_title,member_token})=>{
       vod_id
      })
    }
-   //maogaoDetile 发起结算相关信息
+   //maogaoDetile payMask发起视频结算相关信息
     http.getlessonPay=({room_id,member_token,pay_way,pay_type,vod_id})=>{
       return http.post('/api/video_pay',{
         room_id,member_token,pay_way,pay_type,vod_id
@@ -248,8 +262,11 @@ http.getpoint=({room_id,room_title,member_token})=>{
     }
     //balance 提现请求
     http.getMoney=(member_token)=>{
-      return http.post('/api/rp_pay',{
-        member_token
+      return http.get('/api/ext_redpacket',{
+        params:{
+          member_token
+        }
+       
       })
     }
     // ad 获取商品列表的请求方法
@@ -259,5 +276,41 @@ http.getpoint=({room_id,room_title,member_token})=>{
     //login 根据token获取用户用户的详细信息
     http.getUserIfo=(member_token)=>{
       return http.post('/api/user',{member_token})
+    }
+    //consumeMoney 获取历史消费记录
+    http.getconMoneyList=({member_token,type,starttime,endtime,page})=>{
+      return http.post('/api/user_account_list',{
+        member_token,type,starttime,endtime,page
+      })
+    }
+    //bankCard 银行卡绑定请求
+    http.bankCardBind=({member_token,bank,bank_user,bank_account,bank_branch})=>{
+      return http.post('/api/bank_add',{
+        member_token,bank,bank_user,bank_account,bank_branch  
+      })
+    }
+    //bankcard 获取银行卡列表
+    http.bankCardList = (member_token)=>{
+      return http.post('/api/bank_list',{
+        member_token
+      })
+    }
+    //myadress 添加地址的链接
+    http.addAddress=({member_token,true_name,address,area_id,city_id,province_id,mob_phone,is_default})=>{
+      return http.post('/api/add_address',{
+        member_token,true_name,address,area_id,city_id,province_id,mob_phone,is_default 
+      })
+    }
+    // myadress 获取自己的收获地址列表
+    http.addressList=(member_token)=>{
+      return http.post('/api/address_list',{
+        member_token  
+      })
+    }
+    //myadress 修改编辑地址
+    http.editAddress=({member_token,true_name,address,area_id,city_id,province_id,mob_phone,is_default})=>{
+      return http.post('/api/edit_address',{
+        member_token,true_name,address,area_id,city_id,province_id,mob_phone,is_default  
+      })
     }
     

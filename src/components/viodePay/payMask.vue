@@ -45,7 +45,7 @@ export default {
     },
     //关闭最外遮罩层
     closeThat() {
-      window.console.log(this.$parent._data.showPayMask)
+      // window.console.log(this.$parent._data.showPayMask)
       // this.$emit("closeMask", false)
       this.$parent._data.showPayMask=false;
     },
@@ -58,14 +58,22 @@ export default {
       let ua = navigator.userAgent.toLowerCase();
       this.isWeixin = ua.indexOf("micromessenger") != -1;
       window.console.log("发起微信支付");
+      //判断是否属于录播
+      if(this.$route.query.history || this.$route.query.lesson){
+        this.payVideoData.isliving=true
+      }else{
+        this.payVideoData.isliving=false
+      }
+      // window.console.log('是否能够判断是否为录播=>',this.payVideoData) //ok
       let getToken = getCookie("token");
       if (getToken) {
+  
         if (this._isMobile() && !this.isWeixin) {
           let params = {
             room_id: this.$route.params.id,
             member_token: getToken,
             pay_way: "H5WX",
-            pay_type: "video_pay",
+            pay_type: this.payVideoData.isliving ?'live_pay':"vod_pay",
             vod_id: this.payVideoData.vod_id
           };
           this.$http.getlessonPay(params).then(res => {
@@ -84,7 +92,7 @@ export default {
             room_id: this.$route.params.id,
             member_token: getToken,
             pay_way: "WXBROWSER",
-            pay_type: "video_pay",
+            pay_type: "vod_pay",
             vod_id: this.payVideoData.vod_id
           };
           this.$http.getlessonPay(params2).then(res => {
@@ -165,6 +173,9 @@ export default {
   created() {},
   mounted() {
     this.getPassVideoData();
+  },
+  beforeDestroy(){
+    bus.$off();
   },
   watch: {},
   components: {}

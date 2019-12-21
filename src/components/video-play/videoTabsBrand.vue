@@ -35,16 +35,32 @@ export default {
        })  
       },  
       clickADFn(val){
-        //  window.console.log(val)  
+         window.console.log(val)  
         let params = {
          ads_id:val.ads_id,
          ip:window.localStorage.getItem('Ip'),
          iploc:window.localStorage.getItem('cityname'),
-         uid:getCookie('uid')  
+         member_token:getCookie('token'),
+         room_id:this.$route.params.id  
         }
         this.$http.clickADreq(params).then(res=>{
-         window.console.log(res)   
+         window.console.log(res);
+         if(res.data.code == 200){
+              window.console.log(1111111111111);
+            //  window.location.href= 'https://'+res.data.data.url+'?timestamp='+ new Date().getTime()+Math.random();
+         }
         })
+
+        //获取点击统计
+        // let params = {
+        //   ads_id :val.ads_id,
+        //   ip:window.localStorage.getItem('Ip'),
+        //   iploc:window.localStorage.getItem('cityname'),
+        //   token:getCookie('token')
+        // }
+        // this.$http.clickRedpaper(params).then(res=>{
+        //   window.console.log(res)
+        // })
       }     
     },
     computed: {

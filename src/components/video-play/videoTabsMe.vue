@@ -59,7 +59,7 @@ export default {
        }
       @media (min-height: 810px) and (max-height: 830px) {
     .about-me{
-      height: 26rem;
+      height: 29rem;
       }
        }
 </style>

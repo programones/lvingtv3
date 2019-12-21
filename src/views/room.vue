@@ -29,16 +29,34 @@ export default {
         wechatData:{},//微信用户相关信息
         uid:"",//用户个人辨识ID
         showPayMask:false,//显示付费遮罩层
+        mid:'',//房间的mid
       }
   },
   methods: {
-             
+     //判断是否存在房间号再进行微信授权
+    async ifhaveRoom(){
+        let params = {
+        room_id: this.$route.params.id,
+        member_token:'',
+        ip: localStorage.getItem("Ip"),
+        iploc: localStorage.getItem("cityname"),
+        history: this.$route.query.history || "",
+        lesson: this.$route.query.lesson || ""
+      };
+      let {data} = await  this.$http.livingRoom(params)
+        window.console.log(data,'rrrrrrrrrrrrrrrrr');
+        this.mid = data.data.videoinfo.mid;
+        if(data.code == 200){
+             window.console.log('正常的接口类型',data.data.videoinfo.mid);
+             this.getwxReq()
+        }
+     },        
     getwxReq(){
        //获取微信授权的方法
       if( this.isWeixin && !this.obtainCode ){
          //首次登陆没有token的情况下
         this.$http.getCodeUrl(this.localUrl).then(res=>{
-        console.log(res);
+       
         window.location.href= res.data.data;
       })
       }
@@ -147,16 +165,27 @@ export default {
       }
 
         this.obtainCode = this.getQueryString('code');//获取连接中的code
-         setCookie('code', this.obtainCode,30);//30天有效   
-         this.getwxReq();//获取微信接口的方法 
+         setCookie('code', this.obtainCode,7);//7天有效   
+        //  this.getwxReq();//重新刷新页面获取微信接口的方法 
+
+         this.ifhaveRoom();//判断直播间是否正常再进行授权
+         
     if(this.isWeixin && this.obtainCode){
-        http.getweichatIfo(this.obtainCode).then(res=>{
+        //传入room id
+        // this.$http.weichatRoomID(this.$route.params.id).then(res=>{
+
+        // })
+        let params ={
+          code:this.obtainCode,
+          mid:this.mid
+        }
+        http.weichatRoomID(params).then(res=>{
           //获取微信用户信息的回调
           console.log(res);
           // console.log('上面是打印OpenID');
           
-          this.wechatData = res.data.data;
-          setCookie('openid', this.wechatData.openid, 30); //openId 30天有效时间
+          this.wechatData = res.data;
+          setCookie('openid', this.wechatData.openid,7); //openId 7天有效时间
           let params= {
             openid:this.wechatData.openid,
             uid:this.$route.query.uid || this.getQueryString('uid'),

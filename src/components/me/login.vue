@@ -24,17 +24,17 @@
            </ul>
               <ul class="nav-menu">
             <li @click="haveGift">
-                 <i class="iconfont icon-jiangpin"></i>
+                 <i class="iconfont icon-jiangpin" id="first"></i>
                 <span>有奖任务</span>
                 <p class="first">{{userIfo.task_num}}</p>
              </li> 
             <li @click="unReadingmsg">
-               <i class="iconfont icon-xinfeng"></i> 
+               <i class="iconfont icon-xinfeng" id="second"></i> 
                 <span>未读信息</span>   
                  <p class="senond">{{userIfo.msg_num}}</p>
                 </li> 
             <li>
-                <i class="iconfont icon-lingdang"></i>
+                <i class="iconfont icon-lingdang" id="tired"></i>
                 <span>待处理事务</span>
                  <p  class="tired">{{userIfo.transaction_num}}</p>
                 </li> 
@@ -109,7 +109,7 @@
         <ads></ads>
          <transition-group name="login-fade" mode="in-out">
         <!-- 个人积分模块 -->
-        <personal-integral v-if="integral" @topassIntegralValue="thatIntegralValue" key="1"></personal-integral>
+        <personal-integral v-if="integral" @topassIntegralValue="thatIntegralValue" key="integral"></personal-integral>
         <!-- 消费金额模块&收益金额模块 -->
         <consumemoney v-if="showConMoney" @topassConsume="getConsumeMoneyData"  key="2"></consumemoney>
         <!-- 有奖任务模块 -->
@@ -135,7 +135,7 @@ import personalIntegral from './login-child/personalIntegral';
 import  consumemoney from './login-child/consumeMoney';
 import prizeTask from './login-child/prizeTask';
 import unreadIfo from './login-child/unreadIfo';
-import orderDetile from './login-child/shopping-about/orderDetile';
+import orderDetile from './login-child/shopping-about/myOrder';
 import balance from './login-child/shopping-about/balance';
 import liveVideo from './login-child/shopping-about/liveVideoOrder'
 import buyVideo from './login-child/shopping-about/buyVideoList'
@@ -355,6 +355,15 @@ export default {
       }
       .nav-menu i {
        font-size: 25px;
+      }
+      .nav-menu #first {
+      color: #00a65a;
+      }
+      .nav-menu #second {
+      color:#00c0ef;
+      }
+      .nav-menu #tired {
+      color:#dd4b39;
       }
       .nav-menu span {
       margin-left: 5px;

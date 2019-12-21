@@ -27,7 +27,7 @@
 
 
 <script>
-import {http} from '../../http/http';
+// import {http} from '../../http/http';
 import chartRoom from './videoTabsChat';
 import me from './videoTabsMe';
 import record from './videoTabsRecord';
@@ -53,24 +53,24 @@ export default {
       activeColor: '#00ccfe',
       // 可在这里指定labelKey为你数据里文字对应的字段
       labelKey:'column_name',
-      additionalX:0,
+      additionalX:10,
       }, 
        thistab:'interactive',         
         }
     },
     methods: {
         headTitle(item,index){
-            window.console.log(item,index);
+            // window.console.log(item,index);
             this.thistab=item.column_api
         },
         
     },
     created() {
-     http.roomtabs(this.$route.params.id).then(res=>{
+     this.$http.roomtabs(this.$route.params.id).then(res=>{
         
          if(res.data.code==200) {
              this.tabsArr = res.data.data;
-              window.console.log(this.tabsArr)
+            //   window.console.log(this.tabsArr)
          }
      })  
     },
@@ -89,7 +89,7 @@ export default {
     box-sizing: border-box;
     position: absolute;
     width: 100%;
-    height: 62%;
+    height: 61%;
     border: 6px rgba(241, 241, 239, 0.836) solid;
     }
     .component-fade-enter-active, .component-fade-leave-active {
@@ -101,8 +101,17 @@ export default {
      }
      @media (min-width: 767px) and (max-width: 1300px) { 
          .tab-content{
-              height: 55%;
+              height: 50%;
          }
      }
-
+    @media (min-width: 310px) and (max-width: 320px){
+       .tab-content{
+              height: 60%;
+         }   
+    }
+      @media (min-height: 810px) and (max-height: 820px){
+         .tab-content{
+              height: 68%;
+         }   
+      }
 </style>

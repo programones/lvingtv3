@@ -97,7 +97,7 @@ export default {
                         room_id:this.$route.params.id,
                         member_token:getCookie('token'),
                         pay_way:'H5WX',
-                        pay_type:'video_pay',
+                        pay_type:'vod_pay',
                         vod_id:this.$route.query.vod_id
                     }
                   this.$http.getlessonPay(params).then(res=>{
@@ -116,7 +116,7 @@ export default {
                        room_id:this.$route.params.id,
                         member_token:getCookie('token'),
                         pay_way: 'WXBROWSER',
-                        pay_type:'video_pay',
+                        pay_type:'vod_pay',
                         vod_id:this.$route.query.vod_id  
                     }
                   this.$http.getlessonPay(params).then(res=>{

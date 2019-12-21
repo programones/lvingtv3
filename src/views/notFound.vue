@@ -1,6 +1,6 @@
 <template>
-    <div class="goods-list">
-        <p>商品订单详细列表</p>
+    <div>
+        <h1 class="notf">404</h1>
     </div>
 </template>
 
@@ -24,7 +24,7 @@ export default {
 
     },
     mounted() {
-
+     window.location.href="http://129.204.50.219/notfound/"    
     },
     watch: {
 
@@ -35,6 +35,8 @@ export default {
 };
 </script>
 
-<style>
-
+<style scope>
+    .notf{
+        text-align: center;
+    }
 </style>

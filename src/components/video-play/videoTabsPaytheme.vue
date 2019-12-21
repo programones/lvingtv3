@@ -66,7 +66,12 @@ export default {
     .paytheme {
     position: relative;
     overflow-y: auto;
-    height: 20rem;
+    height: 21rem;
+}
+@media (min-height: 800px) and (max-height: 830px) {
+  .paytheme {
+    height: 26rem;
+  }
 }
 .paytheme .no-video{
     margin-top: 36%;

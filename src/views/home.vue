@@ -105,7 +105,7 @@ export default {
       toLivingroom(roomId,num){
     //    window.console.log(roomId);  
        this.$router.push({ name: 'room', params: { id: roomId }}); //编程式导航
-       window.localStorage.setItem('peoples',num)
+    //    window.localStorage.setItem('peoples',num)
       },
       getSearchVal(val){
           //获取search组件上传的值
@@ -113,7 +113,7 @@ export default {
       },
        wxshareFn(){
         if(this.isWeixin){
-          this.$http.weixinshare(room_id).then(res=>{
+          this.$http.weixinshare().then(res=>{
         //    console.log(res);
             if(res.data.code==200) {
                         this.shareData = res.data.data;

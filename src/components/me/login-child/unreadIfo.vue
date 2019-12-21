@@ -15,7 +15,7 @@
 </template>
 
 <script>
- import  {http} from '../../../http/http'
+ 
  import {getCookie,setCookie,delCookie} from '../../../api/aboutCookies'  //导入封装的cookies方法 
 export default {
     name:'unreadIfo',
@@ -45,7 +45,7 @@ export default {
         toseeDetile(num){
          //点击查看详细
         //  window.console.log('详细');
-         window.console.log(num)
+         window.console.log(num,this.unreadingList[num])
          this.unreadingList[num].is_read=!this.unreadingList[num].is_read;
         },
         getreadIfoList(){
@@ -54,7 +54,7 @@ export default {
              member_token:getCookie('token'),
              page:this.number 
            }
-           http.getunreadIfoList(params).then(res=>{
+           this.$http.getunreadIfoList(params).then(res=>{
             window.console.log(res);
             this.middleList=res.data.data.list;
             this.unreadingList=this.unreadingList.concat(this.middleList)

@@ -2,8 +2,9 @@
   <div class="more-commodity">
       <i class="el-icon-arrow-left" id="iconBack" @click="toback"></i>
     <div class="commodity-header">
+      <input type="text" v-model="searchtext" class="search-text" placeholder="搜索内容">
       <!-- <span class="close">关闭</span> -->
-      <span class="search">搜索</span>
+      <span class="iconfont icon-fangdajing" id="search" @click="searchGoods"></span>
     </div>
     <div class="commodity-body">
       <div class="commodity-item" v-for="(item,i) in goodsList" :key="i" @click="toDetile(item)">
@@ -31,6 +32,7 @@ export default {
     return {
         pageNum:1,//默认请求的页数
         goodsList:[],//商品列表
+        searchtext:''//搜索文字
     };
   },
   methods: {
@@ -53,7 +55,16 @@ export default {
       toback(){
           //返回上一页;
           this.$router.go(-1)
-      }
+      },
+      searchGoods(){
+        //搜索商品
+          this.$notify({
+          title: '正在建设中..',     
+          position: 'bottom-left',
+          iconClass:'el-icon-loading',
+      		duration:3000,//设置0的话的则不会关闭
+        });
+      },
   },
   computed: {},
   created() {},
@@ -67,7 +78,7 @@ export default {
 
 <style>
 .more-commodity #iconBack {
-    border: 1px solid;
+    border-right: 1px solid;
     z-index: 1;
     color: #ccc;
     padding-top: 4px;
@@ -87,8 +98,22 @@ export default {
   right: 0;
   background-color: #fff;
 }
-.more-commodity .commodity-header .search{
- float: right;
+.more-commodity .commodity-header #search{
+   box-sizing: border-box;
+    padding: 6px;
+    font-size: 27px;
+    float: right;
+    color: #aaa;
+    width: 40px;
+    height: 40px;
+    border-left: 1px solid #ddd;
+}
+.more-commodity .commodity-header .search-text{
+     font-size: 18px;
+    outline: none;
+    padding-left: 150px;
+    height: 37px;
+     border: none;
 }
 .more-commodity .commodity-body .commodity-item{
   border-bottom: 1px solid #ddd;

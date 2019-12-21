@@ -67,6 +67,7 @@
 </template>
 
 <script>
+import {getCookie} from '../api/aboutCookies'
 export default {
   props: {},
   data() {
@@ -112,7 +113,7 @@ export default {
       //点击发起兑换请求
       let params={
         goods_id:this.$route.query.goods_id,
-        member_token:"80afde4d75ffa62dfc8fae2a9e618fb333115",
+        member_token:getCookie('token'),
         num:this.num
       }
       this.$http.getgoodsExchange(params).then(res=>{

@@ -29,10 +29,10 @@
             <p class="system-title">系统消息:</p>
             <img :src="item.msg_afterIfo.content" alt width="100%" />
           </div>
-          <div class="li-redpaper"  v-else-if="item.msg_ext=='2'" @click.once="toOpenRedPaper(i,item)">
+          <div class="li-redpaper"  v-else-if="item.msg_ext=='2'" @click="toOpenRedPaper(i,item)">
             <div class="red-box" :class="{'active':item.if_click_redpaper==true}">
               <img src="../../assets/hong_baotimg.jpg" alt height="100%" />
-              <span class="content">{{item.msg_afterIfo.red_content}}</span>
+              <span class="content">{{item.msg_afterIfo.red_title}}</span>
             </div>
           </div>
           <div class="system-msg" v-else-if="item.msg_ext=='4'">
@@ -95,10 +95,10 @@
        <div class="rp-content">
          <div class="rp-body">
           <p id="close-paper" @click="closeRedPaper"> <i class="el-icon-close"></i></p>
-           <img src="../../assets/reBG-open.9333f7b7.png" alt="">
+           <img src="../../assets/reBG-open.9333f7b7.png" alt="" >
            <p class="title" v-if="showRedPaTitle">{{redPaperData.msg_afterIfo.red_content}}</p>
            <p class="money" v-if="showMoney">{{amout}}</p>
-           <img :src="redPaperData.msg_afterIfo.red_img" alt="" class="cover-img">
+           <img :src="redPaperData.msg_afterIfo.red_img" alt="" class="cover-img" @click="toimgad">
            <button class="open-red" @click="drawRedPaper">開</button>
          </div>
          </div> 
@@ -171,6 +171,7 @@ export default {
       signData:{}, //礼物支付数据
       room_id:0,//房间号
       timer:null,//用于防抖函数
+      isWeixin:false,//判断是否在微信浏览器
     };
   },
   methods: {
@@ -396,10 +397,24 @@ export default {
           this.chathistory[i].if_click_redpaper=true
         this.redPaperData = data;
         this.showRedPaper = true;
+        //获取点击统计
+        let params = {
+          ads_id :data.msg_afterIfo.ads_id,
+          ip:window.localStorage.getItem('Ip'),
+          iploc:window.localStorage.getItem('cityname'),
+          member_token:getCookie('token')
+        }
+        this.$http.clickRedpaper(params).then(res=>{
+          window.console.log(res)
+        })
     },
     //关闭红包显示
     closeRedPaper(){
       this.showRedPaper = false;
+    },
+    toimgad(){
+      //点击图片跳转到广告页
+      window.console.log('跳转广告页面~~~')
     },
     //点击开领取红包
     drawRedPaper(){
@@ -445,7 +460,7 @@ export default {
     },
     getgits() {
       //获取礼物列表
-      http.getGift().then(res => {
+      http.getGift(this.$route.params.id).then(res => {
         window.console.log(res, "礼物列表");
         if (res.data.code == 200) {
           this.gitlist = res.data.data;
@@ -455,7 +470,7 @@ export default {
     hiddenGifts() {
       //隐藏礼物列表
       let giftHeight = document.querySelector(".reward-content");
-      animation(giftHeight, { bottom: -500, opacity: 0 });
+      animation(giftHeight, { bottom: -1500, opacity: 0 });
     },
     payGitf(val) {
       //点击相关礼物
@@ -1087,7 +1102,9 @@ export default {
     this.selfName = window.localStorage.getItem("selfName");
 
     this.room_id = this.$route.params.id;
-
+       // 判断是否是微信浏览器
+        let ua = navigator.userAgent.toLowerCase();
+        this.isWeixin = ua.indexOf('micromessenger') != -1;
   },
   destroyed() {
     window.removeEventListener("scroll", this.chathandleScroll, true); //  离开页面清除（移除）滚轮滚动事件
@@ -1106,10 +1123,18 @@ export default {
     height: 14rem;
   }
 }
-@media (min-height: 800px) and (max-height: 830px) {
+@media (min-height: 800px) and (max-height: 812px) {
   .chat-border {
     height: 27rem;
   }
+}
+@media (min-height: 813px) and (max-height: 823px) {
+  .chat-border {
+    height: 23rem;
+  }
+}
+.chat-border .chat-ul {
+  padding-right: 5px;
 }
 .chat-border .no-message {
   font-size: 13px;
@@ -1290,6 +1315,13 @@ export default {
   bottom: -660px;
   background-color: rgba(0, 0, 0, 0.8);
   z-index: 1000;
+}
+@media (min-width: 1900px) and (max-width: 1930x) {
+  .reward-content {
+ 
+  bottom: -1000px;
+ 
+}
 }
 .reward-content .top {
   height: 40px;

@@ -44,6 +44,8 @@
 </template>
 
 <script>
+import {getCookie} from '../../../api/aboutCookies';
+import timeFormat from '../../../api/timeFormat'
 export default {
     props: {
 
@@ -53,6 +55,9 @@ export default {
             consumestartData:1569897688000,
             consumeendData:Date.now(),
             consumeDetileList:0,
+            pageNum:1,//开始请求的页数
+
+
         };
     },
     methods: {
@@ -65,9 +70,26 @@ export default {
       },
       consumechoiceStartDay(){
             //选择开始时间
+            window.console.log(this.consumestartData)
       },
       consumechoiceEndDay(){
         //   选择结束时间
+          window.console.log(this.consumeendData,timeFormat(this.consumeendData,'Y-M-D'));
+          this.getHistoryConsumeList()
+      },
+      // 获取历史消费账单信息
+      getHistoryConsumeList(){
+        let params= {
+          member_token:getCookie('token'),
+          type:'datePicker',
+          starttime:timeFormat(this.consumestartData,'Y-M-D'),
+          endtime:timeFormat(this.consumeendData,'Y-M-D'),
+          page:this.pageNum
+
+        }
+       this.$http.getconMoneyList(params).then(res=>{
+         window.console.log(res)
+        })
       }
     },
     computed: {
