@@ -136,11 +136,7 @@
            duration: 1500
      })
      }else{
-      // window.console.log('发送注册请求',this.phoneNumber,this.code);
-      // if(this.phoneNumber=='15179175372' && this.code== '1234'){
-
-      //   this.$emit('close',{value:false})
-      // }  
+      
       if(this.isWeixin){
         let params ={
           mobile:this.phoneNumber,
@@ -166,7 +162,9 @@
           room_id:this.$route.params.id
         }
         this.$http.getloginToken(params).then(res=>{
+          window.console.log('在没有openid登陆数据==>',res)
             this.loginFn(res)
+            // setCookie('uid',res.data.data.uid,7)
         })
       }
      }
@@ -184,8 +182,10 @@
             this.toastTag=false;
           },2000);
            this.$emit('close',{value:false});
-           this.$route.query.uid = getData.data.uid;
+          //  this.$route.query.uid = getData.data.uid;
            setCookie('token', getData.data.token,this.tokenDay);
+           setCookie('uid', getData.data.uid,this.tokenDay);
+
            window.localStorage.setItem('token',getData.data.token);//将token放进localStirage
            window.console.log(getData)
        } else if(getData.code==500){
@@ -194,6 +194,7 @@
             window.setTimeout(() => {
              this.toastTag = false;
            }, 2000);
+         
        }
      }   
     },

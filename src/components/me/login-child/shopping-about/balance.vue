@@ -267,7 +267,7 @@ export default {
      }
      @media (min-width: 768px) and (max-width: 1024px){
        .balance .balance-list{
-         height:400px;  
+         height:370px;  
        }  
      }
     .balance .balance-list .mx{

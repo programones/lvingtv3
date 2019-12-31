@@ -99,7 +99,7 @@
            <p class="title" v-if="showRedPaTitle">{{redPaperData.msg_afterIfo.red_content}}</p>
            <p class="money" v-if="showMoney">{{amout}}</p>
            <img :src="redPaperData.msg_afterIfo.red_img" alt="" class="cover-img" @click="toimgad">
-           <button class="open-red" @click="drawRedPaper">開</button>
+           <button class="open-red" @click.once="drawRedPaper()" v-if="redPaperData.if_open">開</button>
          </div>
          </div> 
     </div>
@@ -148,6 +148,7 @@ export default {
       showMoney:false,//显示具体获得红包金额
       showRedPaTitle:true,//显示红包的标题
       amout:0,//红包金额
+      timepaper:null,//节流红包点击
       //////////////////////
       info_data: {},
       listeners: {},
@@ -205,6 +206,7 @@ export default {
             if (item.msg_ext == 4 || item.msg_ext == 3 || item.msg_ext == 2) {
               item.msg_afterIfo = JSON.parse(item.msg_info);
               item.if_click_redpaper=false;
+              item.if_open=true;
             } else {
               item.msg_afterIfo = {
                 content: "",
@@ -212,7 +214,8 @@ export default {
                 user_img: "",
                 user_name: "",
                 red_img: "",
-                red_content: ""
+                red_content: "",
+                
               };
             }
           });
@@ -235,7 +238,14 @@ export default {
 
     sendMsg() {
       //点击发上传信息到服务器
-      if (this.sendaMsg == "") {
+      if(!+window.localStorage.getItem('token')){
+        this.$notify({
+          title: '请先登陆',
+          position: 'bottom-left',
+      		duration:3000,//设置0的话的则不会关闭
+        });
+      }else{
+             if (this.sendaMsg == "") {
         this.showToast = true;
         this.toastMsg = "输入内容为空!";
         setTimeout(() => {
@@ -245,6 +255,8 @@ export default {
         //消息不为空 发送消息
         this.sendChatInfo();
       }
+      }
+   
     },
     sendChatInfo() {
       //发送聊天信息需要用到的方法
@@ -393,7 +405,7 @@ export default {
     },
     //点击打开红包
     toOpenRedPaper(i,data){
-      window.console.log(data);
+      // window.console.log(data);
           this.chathistory[i].if_click_redpaper=true
         this.redPaperData = data;
         this.showRedPaper = true;
@@ -410,7 +422,8 @@ export default {
     },
     //关闭红包显示
     closeRedPaper(){
-      this.showRedPaper = false;
+        this.showRedPaper = false;
+      
     },
     toimgad(){
       //点击图片跳转到广告页
@@ -418,7 +431,9 @@ export default {
     },
     //点击开领取红包
     drawRedPaper(){
-      let params = {
+      window.console.log('红包单个开启',this.redPaperData);
+      this.redPaperData.if_open = false;
+              let params = {
         member_token:getCookie('token'),
         rp_id:this.redPaperData.msg_afterIfo.rp_id,
         room_id:this.$route.params.id
@@ -433,13 +448,14 @@ export default {
             this.toastMsg = '领取成功!';
              window.setTimeout(() => {
                 this.showToast = false;
-              }, 2000); 
+              }, 3000); 
           }else if(res.data.code == 504|| res.data.code == 503){
             this.showToast = true;
                this.toastMsg = res.data.msg;
              window.setTimeout(() => {
                 this.showToast = false;
-              }, 2000); 
+              }, 3000); 
+             
           }
       })
       }else{
@@ -448,10 +464,21 @@ export default {
              window.setTimeout(() => {
                 this.showToast = false;
               }, 2000); 
-      }
+      } 
       
-      window.console.log('.............')
+      // window.console.log('.............')
     },
+    //红包的节流
+    //  redpaperlimit(){
+    //    if(this.timepaper){
+    //      clearTimeout(this.timepaper)
+    //    }
+    //    this.timepaper = setTimeout(()=>{
+
+   
+
+    //    },2000)
+    //  },
     showGifts() {
       //点击展示礼物列表
       //  window.console.log('礼物');
@@ -1002,7 +1029,7 @@ export default {
     chatMoutedFn() {
       window.setTimeout(() => {
         let paramsRoomIfo = {
-          member_token: getCookie("token"),
+          member_token:getCookie("token"),
           ip: localStorage.getItem("Ip"),
           room_id: this.$route.params.id
         };
@@ -1074,15 +1101,18 @@ export default {
             let openEmotionFlag = false; //是否打开过表情
             this.sdkLogin();
           }else if(res.data.code==501){
-             delCookie('token');
-            this.$notify({
-                title: '身份过期,请重新登陆',
-                position: "bottom-left",
-                duration: 3000 //设置0的话的则不会关闭
-              }); 
-            window.setTimeout(()=>{
-             window.location.reload();   
-            },3000)
+            // window.localStorage.setItem('token',0);
+            // delCookie('token')
+            // this.$notify({
+            //     title: '身份过期,请重新登陆',
+            //     position: "bottom-left",
+            //     duration: 3000 //设置0的话的则不会关闭
+            //   }); 
+            // window.setTimeout(()=>{
+            //  window.location.reload();   
+             
+          
+            // },14000)
               
           }
         });
@@ -1120,7 +1150,7 @@ export default {
 }
 @media (min-width: 767px) and (max-width: 1300px) {
   .chat-border {
-    height: 14rem;
+    height: 12rem;
   }
 }
 @media (min-height: 800px) and (max-height: 812px) {

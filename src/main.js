@@ -10,6 +10,7 @@ import './base/rem.js'
 // import 'amfe-flexible/index.js'
 import {http} from './http/http';
 Vue.prototype.$http=http;
+
 //导入初始化样式
 import './base/base.css'
 //导入字体图标

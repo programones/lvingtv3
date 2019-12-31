@@ -157,7 +157,7 @@ export default {
         if (document.addEventListener) {
           document.addEventListener(
             "WeixinJSBridgeReady",
-            this.jsApiCall,
+            this.jsApiCall(),
             false
           );
         } else if (document.attachEvent) {

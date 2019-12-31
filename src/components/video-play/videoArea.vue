@@ -25,7 +25,9 @@
         <!-- 密码支付框  -->
       <div class="pwd-mask" v-if="showPWDmask">
         <div class="mask-container">
-            <p class="title"><i class="el-icon-close" id="close-pwd" @click="closePwdMask"></i> 视频密码</p>
+            <p class="title">
+              <!-- <i class="el-icon-close" id="close-pwd" @click="closePwdMask" ></i> -->
+               输入密码</p>
             <div class="content">
             <input type="password" v-model="isPassword" @keyup.enter="sendIsPwd">
             </div>
@@ -98,7 +100,7 @@ export default {
           if(+ this.videoInfoData.amount && ! this.videoInfoData.is_pay_vod){
             this.$notify({
               title: '温馨提示',
-              message: '此视频为收费视频,请付费后观看',
+              message: this.videoInfoData.delay?`此视频为收费视频试看${this.videoInfoData.delay}秒,请付费后观看`:`此视频为收费视频,请付费后观看`,
               position: 'bottom-left',
               type:"warning",
       	    	duration:8000,//设置0的话的则不会关闭
@@ -107,6 +109,10 @@ export default {
               
 
         }else if(res.data.code == 500){
+          this.$router.push({name:"noF"})
+          this.statusTag = '错误';
+          let videobgc = document.querySelector(".video-area"); //没有播放时的设置封面
+          videobgc.style.background = `url(https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1577342046601&di=ca3cc3fd7c5cafff43959217ad40eb52&imgtype=0&src=http%3A%2F%2F5b0988e595225.cdn.sohucs.com%2Fq_70%2Cc_zoom%2Cw_640%2Fimages%2F20180803%2Ff743f4550f2749d18732124ecfa4b885.jpeg)  no-repeat center center / 100% 100%`;
           this.$notify({
           title: '房间不存在',        
           position: 'bottom-left',
@@ -152,6 +158,9 @@ export default {
       		duration:3000,//设置0的话的则不会关闭
         });
         this.showPWDmask = false;
+        this.isPassword ='';
+        this.statusTag = "播放中";
+         this.isLive();
         }else{
              this.$notify({
           title: '密码错误',      
@@ -342,7 +351,7 @@ export default {
              duration: 3000 //设置0的话的则不会关闭
               });   
        }
-       } else if(this.videoInfoData.is_password){
+       } else if(this.statusTag =="显示密码框"){
          this.showPWDmask = true;
        } 
       
@@ -351,18 +360,39 @@ export default {
     toChange() {
       // 判断是否有付费价格 !this.videoInfoData.is_pay_vod
       if (+this.videoInfoData.amount && !this.videoInfoData.is_pay_vod) {
-       bus.$emit('showPayMask',true)
-        window.localStorage.setItem('showPayMask',true)
+      //  bus.$emit('showPayMask',true)
+      //   window.localStorage.setItem('showPayMask',true)
+
       window.setTimeout(()=>{
         
        bus.$emit('payVideoDatas',this.videoInfoData);
           
       },1)
-  
+      if(this.videoInfoData.delay){//几秒的播放试看
+           this.isLive();
+           window.setTimeout(()=>{
+          let videoArea = document.querySelector("#PlayerVideo");
+          videoArea.innerHTML = ""; //清空播放画面
+           let videobgc = document.querySelector(".video-area"); //没有播放时的设置封面
+           videobgc.style.background = `url(${this.coverUrl})  no-repeat center center / 100% 100%`;
+          bus.$emit('showPayMask',true)
+          window.localStorage.setItem('showPayMask',true)
+          this.statusTag = "点我支付";
+           },this.videoInfoData.delay*1000)
+      }else{
+          bus.$emit('showPayMask',true)
+        window.localStorage.setItem('showPayMask',true) 
+        // 处理视频收费逻辑业务
          let videobgc = document.querySelector(".video-area"); //没有播放时的设置封面
          videobgc.style.background = `url(${this.coverUrl})  no-repeat center center / 100% 100%`;
            this.statusTag = "点我支付";
+      }
+          //处理视频收费逻辑业务
+        //  let videobgc = document.querySelector(".video-area"); //没有播放时的设置封面
+        //  videobgc.style.background = `url(${this.coverUrl})  no-repeat center center / 100% 100%`;
+        //    this.statusTag = "点我支付";
         window.console.log('需要付费~~')
+
         return true;
       }else if(this.videoInfoData.is_password){
         //直播间需要输入密码等入时
@@ -462,7 +492,7 @@ export default {
   mounted() {
     //取读直播的人数
     // this.peoples = window.localStorage.getItem("peoples");
-
+    
     // 判断是否属于微信端浏览器
     let ua = navigator.userAgent.toLowerCase();
     this.isWeixin = ua.indexOf("micromessenger") != -1;
@@ -498,6 +528,7 @@ export default {
     });
     //信息发送框中主动推送的直播链接
     this.getChatVideoPlay();
+ 
   }
 };
 </script>
@@ -537,8 +568,10 @@ export default {
   line-height: 19px;
   text-align: center;
   border-radius: 3px;
+  padding-right: 5px;
 } 
 .video-area .cutdowm-mask {
+    color:#00ccfe;
     transform: translate(-50% , -50%);
     top: 50%;
     position: absolute;

@@ -1,20 +1,35 @@
 import axios from 'axios'
 export const http = axios.create({
-    baseURL: 'http://bi.psvideo.cn/' ,//数据请求基地址,
+    baseURL: 'https://bi.psvideo.cn/' ,//数据请求基地址,
+    timeout: 10000,
     // headers: {'Content-Type': 'application/x-www-form-urlencoded'}
   })
-
+  // export const https = axios.create({
+  //   baseURL: 'http://bi.psvideo.cn/' ,//数据请求基地址,
+  //   // headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+  //   headers: { 'content-type': 'multipart/form-data' }
+  // })
    //room 微信分享设置
- http.weixinshare=(room_id)=>{
-  return http.post('/api/wx_share',{
-    room_id  
+ http.weixinshare=({room_id,mid,page_url})=>{
+  return http.post(`/wx/share/${mid}`,{
+    room_id,page_url
   })
 }
+   //room 获取mid请求
+   http.getmid=(room_id)=>{
+    return http.get('api/get_mid',{
+      params:{
+        room_id
+      }
+      
+    })
+   }
+
    //room 获取微信授权的url
-   http.getCodeUrl=(url)=>{
-      return http.get('/api/wx_url',{
+   http.getCodeUrl=({page_url,mid})=>{
+      return http.get('/wx/oauth/'+mid,{
         params:{
-          url 
+          page_url 
         }
       })
    }
@@ -55,9 +70,11 @@ http.getweichatIfo=(code)=>{
  })
 }
 // room 中传入mid 单独获取授权
-http.weichatRoomID=(code,mid)=>{
- return http.post('/wx/oauth_callback/'+mid,{
-  code
+http.weichatRoomID=({mid,code})=>{
+ return http.get(`/wx/oauth_callback/${mid}`,{
+   params:{
+    code
+   }
  })
 }
 
@@ -159,7 +176,7 @@ http.getpoint=({room_id,room_title,member_token})=>{
       member_token,ip,room_id
     })
   }
-  //videoTabsChat 发送聊天信息请求之一  room获取到token后的操作
+  //videoTabsMe 判断token是否有效
   http.userIfourl=(member_token)=>{
     return http.post('/api/user',{
       member_token

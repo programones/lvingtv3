@@ -110,7 +110,8 @@ export default {
       //退出登陆
 
       if (confirm("确认退出登陆吗")) {
-        window.console.log(121212);
+        // window.console.log(121212);
+        window.localStorage.setItem('token',0)
         delCookie("token");
         this.$notify({
           title: "登出成功!",
