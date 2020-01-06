@@ -62,6 +62,35 @@ export default {
         headTitle(item,index){
             // window.console.log(item,index);
             this.thistab=item.column_api
+        //     if(item.column_api=='me'){
+        //         // window.console.log(212121);
+        //          window.setTimeout(()=>{
+        //     if(!+window.localStorage.getItem("token") && this.isWeixin) {
+        //     //已经注册的用户自动登陆
+        //     let paramsList = {
+        //       auth_id:this.wechatData.openid,
+        //       type:"wechat"
+        //     }
+        //     this.$http.getLoginOther(paramsList).then(res=>{
+        //       window.console.log('有openid的情况下自动登陆获取的数据=>',res)
+        //       if(res.data.code == 200) {
+        //         setCookie('token',res.data.data.token,7);
+        //         window.localStorage.setItem('token',res.data.data.token)
+        //         setCookie('uid',res.data.data.uid,7);
+        //         // if(!+window.localStorage.getItem('token')){
+        //         //      window.setTimeout(()=>{
+        //         //   //自动登陆
+        //         //   window.location.reload()
+        //         // },50)
+        //         // }
+               
+                  
+        //       }
+        //     })
+
+        //   }
+        //  },1000)
+        //     }
         },
         
     },

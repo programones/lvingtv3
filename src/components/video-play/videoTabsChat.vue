@@ -238,7 +238,7 @@ export default {
 
     sendMsg() {
       //点击发上传信息到服务器
-      if(!+window.localStorage.getItem('token')){
+      if(!getCookie('token')){
         this.$notify({
           title: '请先登陆',
           position: 'bottom-left',
@@ -276,6 +276,14 @@ export default {
             } else if (res.data.code == 200) {
             }
           });
+        }else {
+            this.sendaMsg = "";
+          this.ifLogin = false;
+           this.$notify({
+          title: '未登录',
+          position: 'bottom-left',
+      		duration:3000,//设置0的话的则不会关闭
+        });
         }
       });
     },

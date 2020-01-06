@@ -11,7 +11,7 @@
 <script>
 import registered from '../me/registered';
 import login from '../me/login';
-import {getCookie,delCookie} from '../../api/aboutCookies';
+import {setCookie,getCookie,delCookie} from '../../api/aboutCookies';
 export default {
    name: 'videoTabsMe',
    props: ['wechatData'],
@@ -23,6 +23,7 @@ export default {
         return {
          showreg:true,
          showlogin:false,   
+         isWeixin:false,
         }
     },
     methods: {
@@ -45,6 +46,31 @@ export default {
               //是否显示登陆框和登录后界面
            this.showreg=true;
         this.showlogin=false; 
+          if(this.isWeixin) {
+            //已经注册的用户自动登陆
+            window.console.log('进入token失效自动登陆状态')
+            let paramsList = {
+              auth_id:getCookie('openid'),
+              type:"wechat"
+            }
+            this.$http.getLoginOther(paramsList).then(res=>{
+              window.console.log('有openid的情况下自动登陆获取的数据=>',res)
+              if(res.data.code == 200) {
+                setCookie('token',res.data.data.token,7);
+                window.localStorage.setItem('token',res.data.data.token)
+                setCookie('uid',res.data.data.uid,7);
+                // if(!+window.localStorage.getItem('token')){
+                     window.setTimeout(()=>{
+                  //自动登陆
+                  window.location.reload()
+                },50)
+                // }
+               
+                  
+              }
+            })
+
+          }
       }else{
          this.showreg=false;
         this.showlogin=true;
@@ -56,9 +82,12 @@ export default {
 
     },
     mounted() {
-      // window.setTimeout(()=>{
+      // 判断是否是微信浏览器
+        let ua = navigator.userAgent.toLowerCase();
+        this.isWeixin = ua.indexOf('micromessenger') != -1;
+      window.setTimeout(()=>{
          this.iftokeEle();
-      // },1000)
+      },1000)
      
       // if(window.localStorage.getItem('token')){
       //    this.showreg=false;

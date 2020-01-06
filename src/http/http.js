@@ -130,6 +130,13 @@ http.getpoint=({room_id,room_title,member_token})=>{
         password,room_id  
       })
  }
+  //videoArea 判断付费视频是否已经付费
+  http.ifpayVideo = ({member_token,history})=>{
+      return http.get('/api/vod_is_paid',{
+        params:{ member_token,history }
+       
+      })
+  }
  //videoTabsBrand 获取广告列表
    http.getADList=({ip,iploc,member_token,room_id,uid})=>{
      return http.post('/api/ads',{
@@ -237,13 +244,13 @@ http.getpoint=({room_id,room_title,member_token})=>{
    }
    //maogaoDetile payMask发起视频结算相关信息
     http.getlessonPay=({room_id,member_token,pay_way,pay_type,vod_id})=>{
-      return http.post('/api/video_pay',{
+      return http.post('/api/room_pay',{
         room_id,member_token,pay_way,pay_type,vod_id
       })
     }
    //videoTabsChat 礼物结算信息
     http.getGiftPay=({room_id,member_token,pay_way,pay_type,gift_id})=>{
-      return http.post('/api/video_pay',{
+      return http.post('/api/room_pay',{
         room_id,member_token,pay_way,pay_type,gift_id
       })
     }

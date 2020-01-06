@@ -5,6 +5,7 @@
               <div class="no-video" v-if="videoHistoryList.length==0"><p>暂无历史视频记录😅</p></div>
 		<div class="vod-box">
 			<a class="vod-box-content" v-for="(item,i) in videoHistoryList" :key="i" @click="toVideo(item)">
+                <span class="price" v-if="item.price!=0">¥{{item.price}}</span>
 				<img :src="item.coverUrl">
 				<p>{{item.videoName}}</p>
 			</a>
@@ -81,12 +82,23 @@ export default {
     margin: 0 auto;
 }
 .vod-box-content {
+    position: relative;
     break-inside: avoid;
     padding: 4px;
    margin: 0 0 10px;
     box-shadow: 0 0 5px #333;
     border-radius: 4px;
     display: block;
+}
+.vod-box-content .price{
+    
+    color: yellow;
+    z-index: 10;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-weight: 800;
+    background-color: hsla(0, 0%, 0%, 0.3);
 }
 .vod-box-content img {
     width: 100%;

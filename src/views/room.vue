@@ -49,7 +49,12 @@ export default {
         if(data.code == 200){
           // this.roomIfo = data.data.videoinfo;
             //  window.console.log('正常的接口类型',data.data.videoinfo.mid);
-             this.getwxReq()
+             window.setTimeout(()=>{
+                 if(window.localStorage.getItem('token')==0 || window.localStorage.getItem('token')==null){
+               this.getwxReq()
+             }
+             },500)
+           
         }
      },        
     getwxReq(){
@@ -227,29 +232,32 @@ export default {
           // });
           })
 
-         window.setTimeout(()=>{
-            if(!+window.localStorage.getItem("token") && this.isWeixin) {
-            //已经注册的用户自动登陆
-            let paramsList = {
-              auth_id:this.wechatData.openid,
-              type:"wechat"
-            }
-            this.$http.getLoginOther(paramsList).then(res=>{
-              window.console.log('有openid的情况下自动登陆获取的数据=>',res)
-              if(res.data.code == 200) {
-                setCookie('token',res.data.data.token,7);
-                window.localStorage.setItem('token',res.data.data.token)
-                setCookie('uid',res.data.data.uid,7);
-                window.setTimeout(()=>{
-                  //自动登陆
-                  window.location.reload()
-                },500)
+        //  window.setTimeout(()=>{
+        //     if(!+window.localStorage.getItem("token") && this.isWeixin) {
+        //     //已经注册的用户自动登陆
+        //     let paramsList = {
+        //       auth_id:this.wechatData.openid,
+        //       type:"wechat"
+        //     }
+        //     this.$http.getLoginOther(paramsList).then(res=>{
+        //       window.console.log('有openid的情况下自动登陆获取的数据=>',res)
+        //       if(res.data.code == 200) {
+        //         setCookie('token',res.data.data.token,7);
+        //         window.localStorage.setItem('token',res.data.data.token)
+        //         setCookie('uid',res.data.data.uid,7);
+        //         // if(!+window.localStorage.getItem('token')){
+        //         //      window.setTimeout(()=>{
+        //         //   //自动登陆
+        //         //   window.location.reload()
+        //         // },50)
+        //         // }
+               
                   
-              }
-            })
+        //       }
+        //     })
 
-          }
-         },1000)
+        //   }
+        //  },1000)
 
         })
       }else if(this.isWeixin && getCookie('openid')){

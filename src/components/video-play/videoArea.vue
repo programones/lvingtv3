@@ -73,7 +73,7 @@ export default {
       //获取直播间的详细信息  
       let params = {
         room_id: this.$route.params.id,
-        member_token:'',
+        member_token:window.localStorage.getItem('token')||'',
         ip: localStorage.getItem("Ip"),
         iploc: localStorage.getItem("cityname"),
         history: this.$route.query.history || "",
@@ -359,25 +359,44 @@ export default {
     //判断直播间是否为收费直播间
     toChange() {
       // 判断是否有付费价格 !this.videoInfoData.is_pay_vod
-      if (+this.videoInfoData.amount && !this.videoInfoData.is_pay_vod) {
+      if (+this.videoInfoData.amount && !this.videoInfoData.is_pay_vod) {//没有付费的情况
+        
       //  bus.$emit('showPayMask',true)
       //   window.localStorage.setItem('showPayMask',true)
-
+      
+    //       let paramsData = {
+    //         member_token:window.localStorage.getItem('token'),
+    //         history:this.$route.query.history
+    //       }
+    //  this.$http.ifpayVideo(paramsData).then(res=>{
+    //    if(res.data.data){
+    //       this.isLive();
+    //    }
+    //  });
+       
       window.setTimeout(()=>{
-        
+        //传递房间信给payMask
        bus.$emit('payVideoDatas',this.videoInfoData);
           
       },1)
-      if(this.videoInfoData.delay){//几秒的播放试看
+     
+      
+         if(this.videoInfoData.delay){//几秒的播放试看
            this.isLive();
+            window.setTimeout(()=>{
+               this.statusTag = "点我支付";
+                this.videostatus=true;//显示视频状态
+            },4000)
+          
            window.setTimeout(()=>{
+             
           let videoArea = document.querySelector("#PlayerVideo");
           videoArea.innerHTML = ""; //清空播放画面
            let videobgc = document.querySelector(".video-area"); //没有播放时的设置封面
            videobgc.style.background = `url(${this.coverUrl})  no-repeat center center / 100% 100%`;
           bus.$emit('showPayMask',true)
           window.localStorage.setItem('showPayMask',true)
-          this.statusTag = "点我支付";
+         
            },this.videoInfoData.delay*1000)
       }else{
           bus.$emit('showPayMask',true)
@@ -385,8 +404,15 @@ export default {
         // 处理视频收费逻辑业务
          let videobgc = document.querySelector(".video-area"); //没有播放时的设置封面
          videobgc.style.background = `url(${this.coverUrl})  no-repeat center center / 100% 100%`;
-           this.statusTag = "点我支付";
+  
+              window.setTimeout(()=>{
+               this.statusTag = "点我支付";
+                this.videostatus=true;//显示视频状态
+            },4000)
+            
       }
+      
+     
           //处理视频收费逻辑业务
         //  let videobgc = document.querySelector(".video-area"); //没有播放时的设置封面
         //  videobgc.style.background = `url(${this.coverUrl})  no-repeat center center / 100% 100%`;
@@ -399,8 +425,12 @@ export default {
           window.console.log('需要密码')
           this.showPWDmask = true;
          this.statusTag = "显示密码框";  
-      }else{
+      }else{ //已经付费或是免费
         this.isLive();
+         window.setTimeout(()=>{
+               this.statusTag = "录播";
+                this.videostatus=true;//显示视频状态
+            },4000)
       }
       // if (this.videoInfoData.is_pay_live || !this.videoInfoData.is_pay_vod) {
       //   if (parseFloat(this.videoInfoData.delay) != 0) {
