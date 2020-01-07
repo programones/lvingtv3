@@ -14,7 +14,7 @@
           <transition-group name="component-fade" mode="in-out">
         <chart-room v-if="thistab=='interactive'" key="one"></chart-room>  
         <me v-show="thistab=='me'" key="two" :wechatData="wechatData"></me>   
-        <record v-if="thistab=='record'" key="three"></record>     
+        <record v-show="thistab=='record'" key="record"></record>     
         <paytheme v-show="thistab=='mogao'" key="four"></paytheme>  
         <rank-list v-if="thistab=='inviteRankList'" key="five"></rank-list>
         <brand v-if="thistab=='origin'" key="six"></brand> 

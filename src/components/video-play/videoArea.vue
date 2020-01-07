@@ -278,7 +278,7 @@ export default {
         window.setTimeout(() => {
           //3秒后视频状态消失
           this.videostatus = false;
-        }, 3000);
+        }, 9000);
         window.setTimeout(() => {
           this.newPlayer(
             this.videoInfoData.stream_live,
@@ -383,12 +383,12 @@ export default {
       
          if(this.videoInfoData.delay){//几秒的播放试看
            this.isLive();
-            window.setTimeout(()=>{
+            // window.setTimeout(()=>{
                this.statusTag = "点我支付";
                 this.videostatus=true;//显示视频状态
-            },4000)
+            // },500)
           
-           window.setTimeout(()=>{
+           window.setTimeout(()=>{//播放完免费观看时间后清空video标签
              
           let videoArea = document.querySelector("#PlayerVideo");
           videoArea.innerHTML = ""; //清空播放画面
@@ -427,10 +427,13 @@ export default {
          this.statusTag = "显示密码框";  
       }else{ //已经付费或是免费
         this.isLive();
-         window.setTimeout(()=>{
+        if(this.$route.query.history||this.$route.query.lesson){//是点播的视频才显示录播状态
+              window.setTimeout(()=>{
                this.statusTag = "录播";
                 this.videostatus=true;//显示视频状态
             },4000)
+        }
+       
       }
       // if (this.videoInfoData.is_pay_live || !this.videoInfoData.is_pay_vod) {
       //   if (parseFloat(this.videoInfoData.delay) != 0) {

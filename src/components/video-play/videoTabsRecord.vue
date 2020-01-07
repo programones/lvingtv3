@@ -4,11 +4,11 @@
          <div class="record">
               <div class="no-video" v-if="videoHistoryList.length==0"><p>暂无历史视频记录😅</p></div>
 		<div class="vod-box">
-			<a class="vod-box-content" v-for="(item,i) in videoHistoryList" :key="i" @click="toVideo(item)">
+			<div class="vod-box-content" v-for="item in videoHistoryList" :key="item.log_id"  @click="toVideo(item)">
                 <span class="price" v-if="item.price!=0">¥{{item.price}}</span>
 				<img :src="item.coverUrl">
 				<p>{{item.videoName}}</p>
-			</a>
+			</div>
 		</div>
     </div>    
     </div>
@@ -76,12 +76,13 @@ export default {
 }
 
 .vod-box {
-    width: 100%;
+    /* width: 100%; */
     /* column-gap:15px; */
     column-count: 5;
     margin: 0 auto;
 }
 .vod-box-content {
+     cursor: pointer;
     position: relative;
     break-inside: avoid;
     padding: 4px;
@@ -89,6 +90,7 @@ export default {
     box-shadow: 0 0 5px #333;
     border-radius: 4px;
     display: block;
+   
 }
 .vod-box-content .price{
     
@@ -105,9 +107,10 @@ export default {
 }    
 .vod-box-content p {
     line-height: 20px;
-    font-size: 0.875em;
+    font-size:1em;
     margin-top: 0px;
     margin-bottom: 5px;
+    font-weight: 800;
 }
 @media (min-width: 992px) and (max-width: 1300px) {
     .vod-box {
@@ -121,12 +124,12 @@ export default {
 }
 @media (min-width: 641px) and (max-width: 767px) {
     .vod-box {
-        column-count: 2;
+        column-count: 1;
     }
 }
 @media (max-width: 450px) and (min-width: 241px) {
     .vod-box {
-        column-count: 2;
+        column-count: 1;
     }
 } 
 </style>

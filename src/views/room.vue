@@ -53,7 +53,7 @@ export default {
                  if(window.localStorage.getItem('token')==0 || window.localStorage.getItem('token')==null){
                this.getwxReq()
              }
-             },500)
+             },1500)
            
         }
      },        

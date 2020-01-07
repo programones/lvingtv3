@@ -6,10 +6,10 @@ module.exports = {
     productionSourceMap:false,
     configureWebpack:{
         externals: {
-        //    'vue': 'Vue',
-        //    'vue-router':'VueRouter',
-        //    'axios': 'axios',
-        //   'element-ui':"ElEMENT"
+           'vue': 'Vue',
+           'vue-router':'VueRouter',
+           'axios': 'axios',
+          'element-ui':"ElEMENT"
         }
       }
 

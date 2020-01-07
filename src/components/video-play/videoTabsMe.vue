@@ -48,7 +48,8 @@ export default {
         this.showlogin=false; 
           if(this.isWeixin) {
             //已经注册的用户自动登陆
-            window.console.log('进入token失效自动登陆状态')
+            // window.console.log('进入token失效自动登陆状态')
+            
             let paramsList = {
               auth_id:getCookie('openid'),
               type:"wechat"
@@ -59,13 +60,19 @@ export default {
                 setCookie('token',res.data.data.token,7);
                 window.localStorage.setItem('token',res.data.data.token)
                 setCookie('uid',res.data.data.uid,7);
+                 this.$notify({
+                title: '已自动登陆',
+                position: "bottom-left",
+                duration: 3000 //设置0的话的则不会关闭
+              }); 
                 // if(!+window.localStorage.getItem('token')){
-                     window.setTimeout(()=>{
+                    //  window.setTimeout(()=>{
                   //自动登陆
-                  window.location.reload()
-                },50)
+                  // window.location.reload()
+                // },500)
                 // }
-               
+               this.showreg=false;
+               this.showlogin=true;
                   
               }
             })
