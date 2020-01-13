@@ -64,7 +64,7 @@ export default {
       ifShowCutdowmMask:false,//是否显示倒计时层
       showPWDmask:false,//是否显示密码输入层
       isPassword:"",
-      coverUrl:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1575693743908&di=32dff5302e8ef44fb149178ee2c21d67&imgtype=0&src=http%3A%2F%2Fg.hiphotos.baidu.com%2Fzhidao%2Fpic%2Fitem%2Fc83d70cf3bc79f3d6e7bf85db8a1cd11738b29c0.jpg',//未付费背景图片
+      coverUrl:'',//未付费背景图片
       targe:true,//点击是否显示人数
     };
   },
@@ -393,6 +393,12 @@ export default {
           let videoArea = document.querySelector("#PlayerVideo");
           videoArea.innerHTML = ""; //清空播放画面
            let videobgc = document.querySelector(".video-area"); //没有播放时的设置封面
+
+              if(this.videoInfoData.cover.indexOf('http')==-1){
+               this.coverUrl=`https://bi.psvideo.cn${this.videoInfoData.cover}` 
+            }else{
+              this.coverUrl = this.videoInfoData.cover
+            }
            videobgc.style.background = `url(${this.coverUrl})  no-repeat center center / 100% 100%`;
           bus.$emit('showPayMask',true)
           window.localStorage.setItem('showPayMask',true)
@@ -403,6 +409,11 @@ export default {
         window.localStorage.setItem('showPayMask',true) 
         // 处理视频收费逻辑业务
          let videobgc = document.querySelector(".video-area"); //没有播放时的设置封面
+            if(this.videoInfoData.cover.indexOf('http')==-1){
+               this.coverUrl=`https://bi.psvideo.cn${this.videoInfoData.cover}` 
+            }else{
+              this.coverUrl = this.videoInfoData.cover
+            }
          videobgc.style.background = `url(${this.coverUrl})  no-repeat center center / 100% 100%`;
   
               window.setTimeout(()=>{

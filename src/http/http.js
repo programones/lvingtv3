@@ -51,6 +51,12 @@ export const http = axios.create({
       room_id
     })
   }
+  //questionForm 提交问题
+  http.referQuestion=({member_token,qn_id,qa_way,qa_ip,q_id,qo_id,qa_text})=>{
+    return http.post('/api/question_add',{
+      member_token,qn_id,qa_way,qa_ip,q_id,qo_id,qa_text
+    })
+  }
 
 http.headList = () => { 
    //获取头部导航标签

@@ -5,9 +5,10 @@
               <div class="no-video" v-if="videoHistoryList.length==0"><p>暂无历史视频记录😅</p></div>
 		<div class="vod-box">
 			<div class="vod-box-content" v-for="item in videoHistoryList" :key="item.log_id"  @click="toVideo(item)">
-                <span class="price" v-if="item.price!=0">¥{{item.price}}</span>
+              
 				<img :src="item.coverUrl">
-				<p>{{item.videoName}}</p>
+				<p>{{item.videoName}} </p>
+                 <p class="price" v-if="item.price!=0" ><span class="inner">付费节目(¥{{item.price}})</span></p>  
 			</div>
 		</div>
     </div>    
@@ -80,27 +81,34 @@ export default {
     /* column-gap:15px; */
     column-count: 5;
     margin: 0 auto;
+    /* position: relative; */
 }
 .vod-box-content {
-     cursor: pointer;
-    position: relative;
+    /* position: inherit; */
     break-inside: avoid;
     padding: 4px;
-   margin: 0 0 10px;
+    margin: 0 0 10px;
     box-shadow: 0 0 5px #333;
     border-radius: 4px;
     display: block;
    
 }
 .vod-box-content .price{
-    
-    color: yellow;
-    z-index: 10;
-    position: absolute;
+    text-align: right;
+     border-radius: 4px;
+    padding: 3px;
+    color: #000;
+    /* position: absolute; */
     top: 10px;
     right: 10px;
-    font-weight: 800;
-    background-color: hsla(0, 0%, 0%, 0.3);
+    /* font-weight: 800; */
+    /* background-color: rgba(255,225,0,.3); */
+  
+}
+.vod-box-content .price .inner{
+ background-color: #ffa500;
+    padding: 1px 5px;
+    border-radius: 3px;
 }
 .vod-box-content img {
     width: 100%;
@@ -110,7 +118,6 @@ export default {
     font-size:1em;
     margin-top: 0px;
     margin-bottom: 5px;
-    font-weight: 800;
 }
 @media (min-width: 992px) and (max-width: 1300px) {
     .vod-box {
@@ -124,12 +131,12 @@ export default {
 }
 @media (min-width: 641px) and (max-width: 767px) {
     .vod-box {
-        column-count: 1;
+        column-count: 2;
     }
 }
 @media (max-width: 450px) and (min-width: 241px) {
     .vod-box {
-        column-count: 1;
+        column-count: 2;
     }
 } 
 </style>

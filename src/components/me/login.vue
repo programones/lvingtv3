@@ -168,6 +168,7 @@ export default {
             showBuyVideo:false,//购买的历史视频记录
             userIfo:{},//用户信息
             NullImg:'https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=2829271447,1822842579&fm=26&gp=0.jpg',
+            
         };
     },
     methods: {
@@ -282,6 +283,7 @@ export default {
     },
     mounted() {
       this.getThatUsrIfo();//获取用户的相关信息
+
     },
     watch: {
 

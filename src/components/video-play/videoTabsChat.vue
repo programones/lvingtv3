@@ -52,7 +52,7 @@
       <!-- 礼物打赏按钮 -->
       <div class="reward" @click="showGifts"></div>
       <!-- 问卷调查按钮 -->
-      <div class="question-from" @click="toQuestionFrom" v-if="room_id==51"> <i class="iconfont icon-ziyuan"></i></div>
+      <div class="question-from" @click="toQuestionFrom" v-if="info_data.questionnaire"> <i class="iconfont icon-ziyuan"></i></div>
     </div>
     <div class="chat-sendmsg">
       <input
@@ -527,7 +527,7 @@ export default {
       //滚动条到顶部的条件
       if (scrollTop == 0) {
   
-        this.chatNum++;
+      
         if (this.middleCahtArr.length) {
             //  window.console.log('21212');
           // this.getchatHistory();
@@ -546,14 +546,19 @@ export default {
     },
     // 防抖函数
     functonTimer(){
+      
       if(this.timer){
-        clearTimeout(this.timer)
+        clearTimeout(this.timer);
+        
       }
-      this.tiemr = setTimeout(()=>{      
+            this.timer = setTimeout(()=>{     
+                this.chatNum++; 
          this.getchatHistory();
         
           this.scorllspaceFn();
-      },1000)
+      },2000)
+      
+    
     },
     closePay() {
       //关闭礼物付费展示
